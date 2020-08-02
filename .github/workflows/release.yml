@@ -32,8 +32,4 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        run: |
-          mvn \
-            clean deploy \
-            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-#            -Drevision=${{ env.RELEASE_VERSION }} \
+        run: mvn -B install -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} # -Drevision=${{ env.RELEASE_VERSION }} \
