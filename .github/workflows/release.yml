@@ -15,7 +15,7 @@ jobs:
       - name: Extract release version
         run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
 
-      - name: Set up JDK 9
+      - name: Set up JDK 9 and settings.xml
         uses: actions/setup-java@v1
         with:
           java-version: 1.9
@@ -30,4 +30,4 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: mvn -B -ntp install -Drevision=${{ env.RELEASE_VERSION }}
+        run: mvn -B -ntp deploy -Drevision=${{ env.RELEASE_VERSION }}
