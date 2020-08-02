@@ -1,5 +1,7 @@
 # WireMock Extension for JUnit Jupiter
 
+![Build master branch](https://github.com/ThomasKasene/wiremock-junit-extension/workflows/Build%20master%20branch/badge.svg?branch=master)
+
 This module aims to provide a JUnit Jupiter extension that starts a WireMock server before the test suite starts
 running, so that the rest of the test setup, such as Spring contexts as well as the tests themselves, will be able to
 access it.
@@ -17,7 +19,8 @@ are:
 ## Prerequisites
 
 * Your code base must be using Java 9 or later.
-* You need to include JUnit Jupiter and WireMock to your dependencies as this module doesn't impose any transitive dependencies.
+* You need to include JUnit Jupiter and WireMock to your dependencies as this module doesn't impose any transitive
+ dependencies.
 
 ## Usage
 
