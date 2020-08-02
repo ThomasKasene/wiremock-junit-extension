@@ -12,6 +12,9 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v2
 
+      - name: Extract release version
+        run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
+
       - name: Install GPG key
         run: |
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
@@ -33,5 +36,4 @@ jobs:
           mvn \
             clean deploy \
             -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-            -Drevision=${{ env.GITHUB_REF }} \
-            -eX
+            -Drevision=${{ env.RELEASE_VERSION }} \

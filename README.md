@@ -54,7 +54,7 @@ Additionally, the WireMock server's HTTP port will be exposed as a system proper
 `wiremock.server.port` by default to cater to existing Spring Cloud Contract-users, but it's possible to override it by
 providing a custom implementation of `WireMockStubsConfiguration.getPortPropertyName`.
 
-## The `WireMockStub`-interface
+### The `WireMockStub`-interface
 
 This is an optional feature of this tool. When implementations of this interface is registered with the `WireMockStubs`
 annotation, an instance of each implementation is created and your test classes can have them automatically injected
