@@ -36,4 +36,4 @@ jobs:
           mvn \
             clean deploy \
             -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-            -Drevision=${{ env.RELEASE_VERSION }} \
+#            -Drevision=${{ env.RELEASE_VERSION }} \
