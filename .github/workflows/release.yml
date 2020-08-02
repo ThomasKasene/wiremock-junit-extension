@@ -30,4 +30,4 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: mvn -B -ntp deploy -Drevision=${{ env.RELEASE_VERSION }}
+        run: mvn -B -e -X -ntp deploy -Drevision=${{ env.RELEASE_VERSION }}
