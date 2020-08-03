@@ -25,15 +25,9 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
 
-      - name: Verify GPG passphrase
-        run: |
-          echo "${{ secrets.GPG_PASSPHRASE }}" \
-          | gpg --batch --passphrase-fd 1 -o /dev/null --local-user ${{ secrets.GPG_KEY_ID }} -as - \
-          && echo "The correct passphrase was entered for this key"
-
       - name: Publish to Sonatype
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: mvn -B -e -X -ntp deploy -Drevision=${{ env.RELEASE_VERSION }}
+        run: mvn -B -ntp deploy -Drevision=${{ env.RELEASE_VERSION }}
