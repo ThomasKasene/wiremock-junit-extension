@@ -15,9 +15,6 @@ jobs:
       - name: Extract release version
         run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
 
-      - name: Print gpg info
-        run: gpg --version
-
       - name: Set up JDK 9 and settings.xml
         uses: actions/setup-java@v1
         with:
@@ -27,6 +24,12 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-passphrase: GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Verify GPG passphrase
+        run: |
+          echo "${{ secrets.GPG_PASSPHRASE }}" \
+          | gpg --batch --passphrase-fd 1 -o /dev/null --local-user ${{ secrets.GPG_KEY_ID }} -as - \
+          && echo "The correct passphrase was entered for this key"
 
       - name: Publish to Sonatype
         env:
