@@ -1,9 +1,13 @@
-name: Build master branch
+name: Build master-branch
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -17,3 +21,12 @@ jobs:
 
       - name: Build with Maven
         run: mvn -B verify
+
+  update_release_draft:
+    name: Update release draft
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
