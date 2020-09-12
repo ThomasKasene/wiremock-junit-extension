@@ -1,0 +1,34 @@
+version-template: $MAJOR.$MINOR.$PATCH.RELEASE
+name-template: v$RESOLVED_VERSION
+tag-template: $RESOLVED_VERSION
+categories:
+  - title: ⭐ New Features
+    labels:
+      - enhancement
+  - title: 🐞 Bug Fixes
+    labels:
+      - bug
+  - title: 📔 Documentation
+    labels:
+      - documentation
+  - title: 🔨 Maintenance
+    labels:
+      - dependency-upgrade
+      - internal
+      - tests
+version-resolver:
+  major:
+    labels:
+      - breaking-change
+  minor:
+    labels:
+      - enhancement
+  patch:
+    labels:
+      - documentation
+      - bug
+      - dependency-upgrade
+      - internal
+      - tests
+  default: patch
+template: |
