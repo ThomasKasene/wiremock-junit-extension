@@ -4,6 +4,7 @@ on: [pull_request]
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -17,3 +18,13 @@ jobs:
 
       - name: Build with Maven
         run: mvn -B verify
+
+  yaml_lint:
+    name: YAML lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Validate YAML files
+        uses: ibiqlik/action-yamllint@v1
