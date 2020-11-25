@@ -2,6 +2,7 @@ package com.thomaskasene.wiremock.junit;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.*;
 
@@ -15,17 +16,23 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
     private WireMockStubsConfiguration configuration;
     private WireMockServer server;
     private Map<Class<? extends WireMockStub>, WireMockStub> stubs;
+    private Integer storedPort;
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         WireMockStubs annotation = findAnnotation(context);
 
+        ExtensionContext.Store store = context.getRoot().getStore(ExtensionContext.Namespace.create(getClass()));
+        String storedPortKey = annotation.toString() + " port";
+        storedPort = store.get(storedPortKey, Integer.class);
+
         createConfiguration(annotation.configClass());
         createServer();
         startServer();
 
-        createStubs(annotation.value());
+        store.put(storedPortKey, server.port());
 
+        createStubs(annotation.value());
         for (WireMockStub wireMockStub : stubs.values()) {
             wireMockStub.beforeAll();
         }
@@ -80,7 +87,13 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
 
     private void createServer() {
         if (server == null) {
-            server = new WireMockServer(configuration.getWireMockConfiguration());
+            if (storedPort == null) {
+                server = new WireMockServer(configuration.getWireMockConfiguration());
+            } else {
+                WireMockConfiguration wireMockConfiguration = configuration.getWireMockConfiguration();
+                wireMockConfiguration.port(storedPort);
+                server = new WireMockServer(wireMockConfiguration);
+            }
         }
     }
 
