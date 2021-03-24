@@ -57,10 +57,11 @@ providing a custom implementation of `WireMockStubsConfiguration.getPortProperty
 ### The `WireMockStub`-interface
 
 This is an optional feature of this tool. When implementations of this interface is registered with the `WireMockStubs`
-annotation, an instance of each implementation is created and your test classes can have them automatically injected
+annotation, an instance of each implementation is created, and your test classes can have them automatically injected
 into class-level variables. See the example snippet below, or the `WireMockStub`-class for more details.
 
 ```java
+
 @WireMockStubs(NameRegistryStub.class)
 public class MyExampleTest {
     private NameRegistryStub nameRegistryStub;
@@ -71,3 +72,6 @@ public class MyExampleTest {
     }
 }
 ```
+
+Furthermore, if a `WireMockStub` also implements the `com.github.tomakehurst.wiremock.extension.Extension` interface, it
+will be automatically registered with the WireMock server, so it may be referred to by name later.
