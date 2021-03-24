@@ -65,7 +65,7 @@ public interface WireMockStubsConfiguration {
      * This method is run once before each test, and should generally be used to clear the WireMock context and any
      * {@link WireMockStub} implementations so they're ready for the next test.
      *
-     * @param stubs A list of all the {{@link WireMockStub} instances that are available.
+     * @param stubs A list of all the {@link WireMockStub} instances that are available.
      *
      * @throws Exception If something goes wrong during the resetting. This will bubble up and get caught by JUnit,
      * which will stop the test.
