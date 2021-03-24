@@ -3,6 +3,7 @@ package com.thomaskasene.wiremock.junit;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.Extension;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.*;
 
@@ -26,13 +27,14 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
         String storedPortKey = annotation.toString() + " port";
         storedPort = store.get(storedPortKey, Integer.class);
 
+        createStubs(annotation.value());
+
         createConfiguration(annotation.configClass());
         createServer();
         startServer();
 
         store.put(storedPortKey, server.port());
 
-        createStubs(annotation.value());
         for (WireMockStub wireMockStub : stubs.values()) {
             wireMockStub.beforeAll();
         }
@@ -76,6 +78,24 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
         }
     }
 
+    private void createStubs(Class<? extends WireMockStub>[] stubClasses) {
+        stubs = new LinkedHashMap<>(stubClasses.length);
+
+        for (Class<? extends WireMockStub> stubClass : stubClasses) {
+            WireMockStub stub = createStub(stubClass);
+            stubs.put(stubClass, stub);
+        }
+    }
+
+    private WireMockStub createStub(Class<? extends WireMockStub> stubClass) {
+        try {
+            return stubClass.getDeclaredConstructor().newInstance();
+        } catch (Exception exception) {
+            throw new RuntimeException("Failed to create the stub " + stubClass.getSimpleName() + ". Does it have" +
+                    " a public default constructor?", exception);
+        }
+    }
+
     private void createConfiguration(Class<? extends WireMockStubsConfiguration> configClass) {
         try {
             configuration = configClass.getDeclaredConstructor().newInstance();
@@ -87,13 +107,23 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
 
     private void createServer() {
         if (server == null) {
-            if (storedPort == null) {
-                server = new WireMockServer(configuration.getWireMockConfiguration());
-            } else {
-                WireMockConfiguration wireMockConfiguration = configuration.getWireMockConfiguration();
-                wireMockConfiguration.port(storedPort);
-                server = new WireMockServer(wireMockConfiguration);
-            }
+            WireMockConfiguration wireMockConfiguration = configuration.getWireMockConfiguration();
+            configureWithStubsAsExtensions(wireMockConfiguration);
+            configureWithStoredPort(wireMockConfiguration);
+            server = new WireMockServer(wireMockConfiguration);
+        }
+    }
+
+    private void configureWithStubsAsExtensions(WireMockConfiguration wireMockConfiguration) {
+        stubs.values().stream()
+                .filter(wireMockStub -> wireMockStub instanceof Extension)
+                .map(wireMockStub -> (Extension) wireMockStub)
+                .forEach(wireMockConfiguration::extensions);
+    }
+
+    private void configureWithStoredPort(WireMockConfiguration wireMockConfiguration) {
+        if (storedPort != null) {
+            wireMockConfiguration.port(storedPort);
         }
     }
 
@@ -110,24 +140,6 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
     private void exposePortInSystemProperties() {
         if (configuration.getPortPropertyName() != null) {
             System.setProperty(configuration.getPortPropertyName(), String.valueOf(server.port()));
-        }
-    }
-
-    private void createStubs(Class<? extends WireMockStub>[] stubClasses) {
-        stubs = new LinkedHashMap<>(stubClasses.length);
-
-        for (Class<? extends WireMockStub> stubClass : stubClasses) {
-            WireMockStub stub = createStub(stubClass);
-            stubs.put(stubClass, stub);
-        }
-    }
-
-    private WireMockStub createStub(Class<? extends WireMockStub> stubClass) {
-        try {
-            return stubClass.getDeclaredConstructor().newInstance();
-        } catch (Exception exception) {
-            throw new RuntimeException("Failed to create the stub " + stubClass.getSimpleName() + ". Does it have" +
-                    " a public default constructor?", exception);
         }
     }
 
