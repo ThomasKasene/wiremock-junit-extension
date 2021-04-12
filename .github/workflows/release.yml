@@ -31,7 +31,8 @@ jobs:
       - name: Set up JDK 9 and settings.xml
         uses: actions/setup-java@v2
         with:
-          java-version: 1.9
+          java-version: 9
+          distribution: zulu
           server-id: sonatype-nexus
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
