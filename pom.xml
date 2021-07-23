@@ -35,7 +35,7 @@
     <properties>
         <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
         <junit-jupiter.version>5.7.2</junit-jupiter.version>
-        <logback.version>1.2.3</logback.version>
+        <logback.version>1.2.4-groovyless</logback.version>
         <lombok.version>1.18.20</lombok.version>
         <maven.compiler.source>9</maven.compiler.source>
         <maven.compiler.target>9</maven.compiler.target>
