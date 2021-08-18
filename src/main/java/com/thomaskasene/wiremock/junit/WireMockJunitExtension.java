@@ -24,7 +24,7 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
         WireMockStubs annotation = findAnnotation(context);
 
         ExtensionContext.Store store = context.getRoot().getStore(ExtensionContext.Namespace.create(getClass()));
-        String storedPortKey = annotation.toString() + " port";
+        String storedPortKey = annotation + " port";
         storedPort = store.get(storedPortKey, Integer.class);
 
         createStubs(annotation.value());
