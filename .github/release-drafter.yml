@@ -17,6 +17,7 @@ categories:
       - internal
       - tests
 sort-by: title
+sort-direction: ascending
 version-resolver:
   major:
     labels:
