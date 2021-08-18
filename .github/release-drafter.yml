@@ -16,6 +16,7 @@ categories:
       - dependency-upgrade
       - internal
       - tests
+sort-by: title
 version-resolver:
   major:
     labels:
