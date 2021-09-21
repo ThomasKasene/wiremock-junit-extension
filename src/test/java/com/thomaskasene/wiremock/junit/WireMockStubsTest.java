@@ -4,24 +4,11 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.net.ConnectException;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("When @WireMockStubs")
 public class WireMockStubsTest {
-
-    @NestedTestClass
-    @DisplayName("is absent")
-    class WireMockStubsAnnotationAbsentTest {
-
-        @Test
-        @DisplayName("the WireMock server is unavailable")
-        void serverIsUnavailable() {
-            assertThrows(ConnectException.class, () -> WireMock.stubFor(get("/test")));
-        }
-    }
 
     @WireMockStubs
     @NestedTestClass

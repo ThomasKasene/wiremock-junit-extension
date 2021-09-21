@@ -17,15 +17,19 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
     private WireMockStubsConfiguration configuration;
     private WireMockServer server;
     private Map<Class<? extends WireMockStub>, WireMockStub> stubs;
-    private Integer storedPort;
 
     @Override
+    @SuppressWarnings("unchecked")
     public void beforeAll(ExtensionContext context) throws Exception {
         WireMockStubs annotation = findAnnotation(context);
 
         ExtensionContext.Store store = context.getRoot().getStore(ExtensionContext.Namespace.create(getClass()));
-        String storedPortKey = annotation + " port";
-        storedPort = store.get(storedPortKey, Integer.class);
+
+        String storedServerKey = annotation + " server";
+        server = store.get(storedServerKey, WireMockServer.class);
+
+        String storedStubsKey = annotation + " stubs";
+        stubs = store.get(storedStubsKey, Map.class);
 
         createStubs(annotation.value());
 
@@ -33,7 +37,8 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
         createServer();
         startServer();
 
-        store.put(storedPortKey, server.port());
+        store.put(storedServerKey, server);
+        store.put(storedStubsKey, stubs);
 
         for (WireMockStub wireMockStub : stubs.values()) {
             wireMockStub.beforeAll();
@@ -63,8 +68,6 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
         for (WireMockStub wireMockStub : stubs.values()) {
             wireMockStub.afterAll();
         }
-
-        stopServer();
     }
 
     private WireMockStubs findAnnotation(ExtensionContext context) {
@@ -79,11 +82,13 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
     }
 
     private void createStubs(Class<? extends WireMockStub>[] stubClasses) {
-        stubs = new LinkedHashMap<>(stubClasses.length);
+        if (stubs == null) {
+            stubs = new LinkedHashMap<>(stubClasses.length);
 
-        for (Class<? extends WireMockStub> stubClass : stubClasses) {
-            WireMockStub stub = createStub(stubClass);
-            stubs.put(stubClass, stub);
+            for (Class<? extends WireMockStub> stubClass : stubClasses) {
+                WireMockStub stub = createStub(stubClass);
+                stubs.put(stubClass, stub);
+            }
         }
     }
 
@@ -109,7 +114,6 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
         if (server == null) {
             WireMockConfiguration wireMockConfiguration = configuration.getWireMockConfiguration();
             configureWithStubsAsExtensions(wireMockConfiguration);
-            configureWithStoredPort(wireMockConfiguration);
             server = new WireMockServer(wireMockConfiguration);
         }
     }
@@ -119,12 +123,6 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
                 .filter(wireMockStub -> wireMockStub instanceof Extension)
                 .map(wireMockStub -> (Extension) wireMockStub)
                 .forEach(wireMockConfiguration::extensions);
-    }
-
-    private void configureWithStoredPort(WireMockConfiguration wireMockConfiguration) {
-        if (storedPort != null) {
-            wireMockConfiguration.port(storedPort);
-        }
     }
 
     private void startServer() {
@@ -166,15 +164,5 @@ class WireMockJunitExtension implements BeforeAllCallback, AfterAllCallback, Bef
                     + hierarchyLevelType.getSimpleName() + "." + field.getName(), exception);
         }
         field.setAccessible(wasPreviouslyAccessible);
-    }
-
-    private void stopServer() {
-        if (server.isRunning()) {
-            int port = server.port();
-            server.stop();
-            WireMock.configure();
-
-            log.info("Stopped the WireMock server that was running on port {}", port);
-        }
     }
 }
