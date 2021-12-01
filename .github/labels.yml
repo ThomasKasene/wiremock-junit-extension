@@ -17,7 +17,7 @@
   from_name: "enhancement"
 - name: "type: question"
   color: "7AE5B4"
-  description: "Ask a question about the workings of the tool"
+  description: "A question about the workings of the tool"
   from_name: "question"
 - name: "type: internal"
   color: "7AE5B4"
@@ -27,6 +27,9 @@
   color: "7AE5B4"
   description: "New and/or updates to existing tests"
   from_name: "tests"
+- name: "type: regression"
+  color: "7AE5B4"
+  description: "A regression from a previous release"
 
 # Impacts
 - name: "impact: breaking-change"
@@ -48,4 +51,4 @@
   from_name: "duplicate"
 - name: "status: waiting-for-feedback"
   color: "0366D6"
-  description: "We need additional information before we can continue"
+  description: "Additional information is needed in order to proceed"
