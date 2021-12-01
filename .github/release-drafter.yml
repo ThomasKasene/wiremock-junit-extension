@@ -4,34 +4,36 @@ tag-template: $RESOLVED_VERSION
 categories:
   - title: ⭐ New Features
     labels:
-      - enhancement
+      - 'type: enhancement'
   - title: 🐞 Bug Fixes
     labels:
-      - bug
+      - 'type: bug'
+      - 'type: regression'
   - title: 📔 Documentation
     labels:
-      - documentation
+      - 'type: documentation'
   - title: 🔨 Maintenance
     labels:
-      - dependency-upgrade
-      - internal
-      - tests
+      - 'type: dependency-upgrade'
+      - 'type: internal'
+      - 'type: tests'
 sort-by: title
 sort-direction: ascending
 version-resolver:
   major:
     labels:
-      - breaking-change
+      - 'impact: breaking-change'
   minor:
     labels:
-      - enhancement
+      - 'type: enhancement'
   patch:
     labels:
-      - documentation
-      - bug
-      - dependency-upgrade
-      - internal
-      - tests
+      - 'type: documentation'
+      - 'type: bug'
+      - 'type: dependency-upgrade'
+      - 'type: internal'
+      - 'type: regression'
+      - 'type: tests'
   default: patch
 template: |
   $CHANGES
