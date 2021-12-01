@@ -1,6 +1,10 @@
 name: label-maker
 
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/label-maker.yml'
+      - '.github/labels.yml'
   push:
     paths:
       - '.github/workflows/label-maker.yml'
