@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - '.github/workflows/build.yml'
+      - 'src/**'
+      - '.yamllint'
+      - 'pom.xml'
+  push:
+    paths:
+      - '.github/workflows/build.yml'
+      - 'src/**'
+      - '.yamllint'
+      - 'pom.xml'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Validate YAML files
+        uses: ibiqlik/action-yamllint@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          cache: maven
+          java-version: 9
+          distribution: zulu
+
+      - name: Build with Maven
+        run: mvn verify -B -ntp
+
+      - name: Update release draft
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

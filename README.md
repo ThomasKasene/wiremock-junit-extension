@@ -1,6 +1,6 @@
 # WireMock Extension for JUnit Jupiter
 
-![Build main branch](https://github.com/ThomasKasene/wiremock-junit-extension/actions/workflows/main.yml/badge.svg)
+![Build main branch](https://github.com/ThomasKasene/wiremock-junit-extension/actions/workflows/build.yml/badge.svg)
 
 This module aims to provide a JUnit Jupiter extension that starts a WireMock server before the test suite starts
 running, so that the rest of the test setup, such as Spring contexts as well as the tests themselves, will be able to
