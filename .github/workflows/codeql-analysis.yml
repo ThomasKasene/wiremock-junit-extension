@@ -1,10 +1,17 @@
-name: "CodeQL"
+name: CodeQL
 
 on:
   push:
     branches: [main]
+    paths:
+      - '.github/workflows/codeql-analysis.yml'
+      - 'src/**'
+      - 'pom.xml'
   pull_request:
-    branches: [main]
+    paths:
+      - '.github/workflows/codeql-analysis.yml'
+      - 'src/**'
+      - 'pom.xml'
   schedule:
     - cron: '0 15 * * 1'
 
@@ -12,31 +19,21 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ['java']
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
 
-      - run: git checkout HEAD^2
-        if: ${{ github.event_name == 'pull_request' }}
-
-      - name: Set up JDK 9
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
+          cache: maven
           java-version: 9
           distribution: zulu
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
         with:
-          languages: ${{ matrix.language }}
+          languages: java
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v1

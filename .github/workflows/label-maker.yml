@@ -2,6 +2,7 @@ name: label-maker
 
 on:
   pull_request:
+    types: [opened, reopened]
     paths:
       - '.github/workflows/label-maker.yml'
       - '.github/labels.yml'
@@ -25,7 +26,7 @@ jobs:
           dry-run: true
 
       - name: Synchronize labels
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: crazy-max/ghaction-github-labeler@v3.1.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
