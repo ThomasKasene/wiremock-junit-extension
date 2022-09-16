@@ -1,12 +1,14 @@
 version: 2
 updates:
   - package-ecosystem: "maven"
+    open-pull-requests-limit: 20
     directory: "/"
     schedule:
       interval: "daily"
     labels:
       - "type: dependency-upgrade"
   - package-ecosystem: "github-actions"
+    open-pull-requests-limit: 20
     directory: "/"
     schedule:
       interval: "weekly"
