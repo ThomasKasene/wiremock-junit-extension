@@ -3,6 +3,8 @@
 ![Build main branch](https://github.com/ThomasKasene/wiremock-junit-extension/actions/workflows/build.yml/badge.svg)
 [![Maven Central](https://img.shields.io/maven-central/v/com.thomaskasene.wiremock/wiremock-junit-extension.svg?label=Maven%20Central)](https://search.maven.org/artifact/com.thomaskasene.wiremock/wiremock-junit-extension)
 
+:warning: *This project has been cancelled in favor of Wiremock's own [JUnit extension](https://wiremock.org/docs/junit-jupiter/).*
+
 This module aims to provide a JUnit Jupiter extension that starts a WireMock server before the test suite starts
 running, so that the rest of the test setup, such as Spring contexts as well as the tests themselves, will be able to
 access it.
